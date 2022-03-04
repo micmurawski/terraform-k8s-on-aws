@@ -14,10 +14,10 @@ data "aws_ami" "ubuntu" {
 }
 
 module "vpc" {
-  source         = "./modules/vpc"
-  prefix         = local.prefix
-  flow_logs      = false
-  tags           = local.tags
+  source    = "./modules/vpc"
+  prefix    = local.prefix
+  flow_logs = false
+  tags      = local.tags
   subnets_config = {
     public  = local.public_subnets
     private = local.private_subnets
@@ -45,7 +45,7 @@ resource "aws_instance" "bastion" {
 
 module "eks-cluster" {
   source        = "./modules/eks"
-  name          = format("%s-af-eks", local.prefix)
+  name          = format("%s-eks", local.prefix)
   key_name      = aws_key_pair.this.key_name
   instance_type = "t2.micro"
   tags          = local.tags
@@ -72,3 +72,10 @@ module "eks-cluster" {
 
 #### POSTGRES 
 
+
+### SSM PARAMETERS
+
+resource "aws_ssm_parameter" "api_url" {
+  name  = format("%s/%s/vpc_id", var.project_name, var.environment)
+  value = module.vpc.vpc_id
+}
