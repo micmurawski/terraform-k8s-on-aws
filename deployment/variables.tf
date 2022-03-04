@@ -3,7 +3,6 @@ variable "project_name" {
   default = "k8s-on-aws"
 }
 
-
 variable "environment" {
   type    = string
   default = "dev"

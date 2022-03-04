@@ -11,4 +11,5 @@ locals {
     for x in range(var.num_private_subnets) : { cidr = cidrsubnet(cidrsubnet(var.cidr, 2, 1), 6, x), availability_zone = data.aws_availability_zones.available.names[x] }
   ]
 
+  prefix = format("%s-%s", var.project_name, var.environment)
 }

@@ -44,20 +44,15 @@ terraform_plan: $(TERRAFORM) terraform_init $(TERRAFORM_DIR)/tfplan.out
 
 $(TERRAFORM_DIR)/tfplan.out: $(CACHE_DIR) $(TERRAFORM_FILES) terraform_init
 ifneq ($(VAR_FILE),)
-	cd $(TERRAFORM_DIR) && $(TERRAFORM) plan -var-file=../../../$(VAR_FILE) -out tfplan.out
+	cd $(TERRAFORM_DIR) && $(TERRAFORM) plan -var-file=../$(VAR_FILE) -out tfplan.out
 else
 	cd $(TERRAFORM_DIR) && $(TERRAFORM) plan -out tfplan.out
 endif
 
 .PHONY: terraform_apply
 terraform_apply: terraform_plan
-ifneq ($(VAR_FILE),)
-	cd $(TERRAFORM_DIR) && $(TERRAFORM) apply -var-file=../../../$(VAR_FILE) -auto-approve tfplan.out
-	rm $(TERRAFORM_DIR)/tfplan.out
-else
 	cd $(TERRAFORM_DIR) && $(TERRAFORM) apply -auto-approve tfplan.out
 	rm $(TERRAFORM_DIR)/tfplan.out
-endif
 
 .PHONY: terraform_refresh
 terraform_refresh: $(TERRAFORM) terraform_validate terraform_init
@@ -66,11 +61,11 @@ terraform_refresh: $(TERRAFORM) terraform_validate terraform_init
 
 .PHONY: terraform_destroy
 terraform_destroy: $(TERRAFORM) terraform_init
-	cd $(TERRAFORM_DIR) && $(TERRAFORM) destroy -var-file=../../../$(BACKEND_CONFIG)
+	cd $(TERRAFORM_DIR) && $(TERRAFORM) destroy -var-file=../$(BACKEND_CONFIG)
 
 .PHONY: terraform_destroy_target
 terraform_destroy_target: $(TERRAFORM) terraform_init
-	cd infra/terraform && $(TERRAFORM) destroy -var-file=../../../$(BACKEND_CONFIG)
+	cd infra/terraform && $(TERRAFORM) destroy -var-file=../$(BACKEND_CONFIG)
 
 
 .PHONY: terraform_validate
@@ -81,7 +76,7 @@ terraform_validate: $(TERRAFORM_DIR)/backend.tf $(TERRAFORM) terraform_init
 
 .PHONY: terraform_init
 terraform_init: $(TERRAFORM)
-	cd $(TERRAFORM_DIR) && $(TERRAFORM) init -backend-config=../../../$(BACKEND_CONFIG)
+	cd $(TERRAFORM_DIR) && $(TERRAFORM) init -backend-config=../$(BACKEND_CONFIG)
 #	cd $(TERRAFORM_DIR) && $(TERRAFORM) workspace new $(TERRAFORM_WORKSPACE_NAME)
 #select $(TERRAFORM_WORKSPACE_NAME) -backend-config=$(BACKEND_CONFIG) || $(TERRAFORM) workspace new $(TERRAFORM_WORKSPACE_NAME) -backend-config=$(BACKEND_CONFIG)
 #ifneq ($(BACKEND_CONFIG), "")

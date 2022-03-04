@@ -1,5 +1,5 @@
 resource "aws_iam_role" "eks_cluster_role" {
-  name = format("%s-eks-cluster-role", var.prefix)
+  name = format("%s-eks-cluster-role", var.name)
   tags = local.tags
   assume_role_policy = jsonencode({
     Statement = [{
@@ -26,7 +26,7 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSVPCResourceController-attach
 
 
 resource "aws_iam_role" "eks_node_group_role" {
-  name = format("%s-eks-node-group-role", var.prefix)
+  name = format("%s-eks-node-group-role", var.name)
 
   assume_role_policy = jsonencode({
     Statement = [{
